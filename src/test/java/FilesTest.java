@@ -2,12 +2,15 @@ import com.codeborne.pdftest.PDF;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 
+import com.codeborne.selenide.commands.ShouldBe;
+import com.codeborne.selenide.commands.ShouldHave;
 import com.codeborne.selenide.selector.ByText;
 import com.codeborne.xlstest.XLS;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.By;
 
 import java.io.*;
 import java.util.List;
@@ -29,8 +32,9 @@ public class FilesTest {
         Configuration.pageLoadTimeout = 60000;
     }
 
+    // @Disabled
     @Test
-    // @DisplayName("имя файла")
+    @DisplayName("uploadFileTest")
     void uploadFileTest() {
         open("https://the-internet.herokuapp.com/upload");
         File exampleFile = new File("src/test/resources/example.txt");
@@ -42,6 +46,7 @@ public class FilesTest {
     }
 
     @Test
+    @DisplayName("downloadTextFileTest")
     void downloadTextFileTest() throws IOException {
         open("https://github.com/junit-team/junit5/blob/main/README.md");
         File download = $("[data-testid=raw-button]").download();
@@ -52,6 +57,7 @@ public class FilesTest {
     }
 
     @Test
+    @DisplayName("downloadPdfFileTest")
     void downloadPdfFileTest() throws IOException {
         open("https://junit.org/junit5/docs/current/user-guide/");
         File pdf = $(new ByText("PDF download")).download();
@@ -60,21 +66,25 @@ public class FilesTest {
     }
 
     @Test
+    @DisplayName("downloadXlsFileTest")
     void downloadXlsFileTest() throws IOException {
-        open("https://romashka2008.ru/price");
+        //open("https://romashka2008.ru/price");
         // File file = $$("a[href*='prajs']").find(text("Скачать Прайс-лист Excel")).download();
-        File file = $(new ByText("Прайс от 10.11")).download();  // не видит кирилицу???
-        XLS parsedXls = new XLS(file);
-        /*boolean checkPassed = parsedXls.excel
+        //File file = $(new ByText("Прайс от 10.11")).download();
+        open("https://kvarts.ru");
+        File file = $(new ByText("Оптовый прайс лист")).download();
+        /* XLS parsedXls = new XLS(file);
+        boolean checkPassed = parsedXls.excel
                 .getSheetAt(0)
-                .getRow(11)
+                .getRow(1)
                 .getCell(1)
                 .getStringCellValue()
-                .contains("693010");
-        assertTrue(checkPassed);*/
+                .contains("наименование");
+        assertTrue(checkPassed); */
     }
 
     @Test
+    @DisplayName("parseCsvFileTest")
     void parseCsvFileTest() throws IOException, CsvException {
         ClassLoader classLoader = this.getClass().getClassLoader();
         try (InputStream is = classLoader.getResourceAsStream("example.csv");
@@ -86,6 +96,7 @@ public class FilesTest {
     }
 
     @Test
+    @DisplayName("parseZipFileTest")
     void parseZipFileTest() throws IOException, CsvException {
         ClassLoader classLoader = this.getClass().getClassLoader();
         try (InputStream is = classLoader.getResourceAsStream("example.zip");
